@@ -1,0 +1,37 @@
+#!/bin/sh
+
+
+##== SETUP
+if [ -z "$1" ]; then
+	echo "Please provide a file name to store the scanned document to. Usage: 'nopaper <filename>'"
+	exit 1
+fi
+
+
+##== SCAN
+echo "Scanning document..."
+SCANTO=$(mktemp --suffix=".pdf" --tmpdir=.)
+NAPS2.Console.exe --enableocr -p document.flatbed -o $SCANTO --force
+
+
+##== COMPRESS & PDF/A
+sleep 1
+echo "Compressing document..."
+PDF_BEFORE_A=$SCANTO
+PDF_A=$1
+pdftops $PDF_BEFORE_A - | gs \
+    -dPDFA=2 \
+    -dBATCH \
+    -dNOPAUSE \
+    -sProcessColorModel=DeviceCMYK \
+    -sDEVICE=pdfwrite \
+    -dPDFSETTINGS=/printer \
+    -r1200 \
+    -sPDFACompatibilityPolicy=1 \
+    -sOutputFile=$PDF_A \
+    -
+
+##== CLEANUP
+rm $SCANTO
+
+echo "Finished scanning document to ${PDF_A}"
