@@ -11,6 +11,7 @@ Features:
 - OCR documents
 - Compress scanned PDF documents
 - Save as [PDF/A](https://en.wikipedia.org/wiki/PDF/A)
+- Multipage scans. nopaper automatically appends to existing PDF documents
 
 ## Getting Started
 
@@ -27,3 +28,5 @@ To scan a document, open a WSL shell and execute:
 ```bash
 ./nopaper <filename>
 ```
+
+If `filename` already exists, nopaper will append to the existing file.
